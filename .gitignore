@@ -8,3 +8,6 @@ build/*
 _C.*
 outputs/*
 checkpoints/*.pt
+video/frames/0000.jpg
+video/frames/0001.jpg
+*.jpg
