@@ -60,10 +60,10 @@ class seg3d:
         self.pipeline = rs.pipeline()
         config = rs.config()
         #包含加速度计和陀螺仪
-        config.enable_stream(rs.stream.accel, rs.format.motion_xyz32f, 100)
-        config.enable_stream(rs.stream.gyro, rs.format.motion_xyz32f, 100)
+        # config.enable_stream(rs.stream.accel, rs.format.motion_xyz32f, 100)
+        # config.enable_stream(rs.stream.gyro, rs.format.motion_xyz32f, 100)
         config.enable_stream(rs.stream.color, RES_X, RES_Y, rs.format.bgr8, 30)
-        config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+        config.enable_stream(rs.stream.depth, 848, 480, rs.format.z16, 30)
         self.pipeline.start(config)
         align_to = rs.stream.color
         self.align = rs.align(align_to)
@@ -83,20 +83,22 @@ class seg3d:
         self.intrinsics_ppy = intrinsics.ppy
 
         #获取姿态数据
-        rotation = R.from_euler('xyz', [0, 0, 0], degrees=True) #初始化
-        accel = aligned_frames.first_or_default(rs.stream.accel)
-        gyro = aligned_frames.first_or_default(rs.stream.gyro)
-        if accel and gyro:
-            accel_data = accel.as_motion_frame().get_motion_data()
-            gyro_data = gyro.as_motion_frame().get_motion_data()
-            # 将陀螺仪数据转换为旋转向量（单位是弧度/秒）
-            gyro_vector = np.array([gyro_data.x, gyro_data.y, gyro_data.z])
-            dt = 1.0 / 200  # 采样间隔，假设200Hz采样率
-            delta_rotation = R.from_rotvec(gyro_vector * dt)
-            # 更新姿态
-            rotation = delta_rotation * rotation
-            # 获取当前姿态
-            self.euler_angles = rotation.as_euler('xyz', degrees=True)
+        # rotation = R.from_euler('xyz', [0, 0, 0], degrees=True) #初始化
+        # accel = aligned_frames.first_or_default(rs.stream.accel)
+        # gyro = aligned_frames.first_or_default(rs.stream.gyro)
+        # if accel and gyro:
+        #     accel_data = accel.as_motion_frame().get_motion_data()
+        #     gyro_data = gyro.as_motion_frame().get_motion_data()
+        #     # 将陀螺仪数据转换为旋转向量（单位是弧度/秒）
+        #     gyro_vector = np.array([gyro_data.x, gyro_data.y, gyro_data.z])
+        #     dt = 1.0 / 200  # 采样间隔，假设200Hz采样率
+        #     delta_rotation = R.from_rotvec(gyro_vector * dt)
+        #     # 更新姿态
+        #     rotation = delta_rotation * rotation
+        #     # 获取当前姿态
+        #     self.euler_angles = rotation.as_euler('xyz', degrees=True)
+
+        self.euler_angles = [0, -10, 0]
 
     @property
     def get_rgb(self):
@@ -304,7 +306,7 @@ class seg3d:
             self.render()
 
 if __name__ == '__main__':
-    Seg3D = seg3d(960, 540, False)
+    Seg3D = seg3d(1280, 720, False)
     # next
     while True:
         start = time.time()

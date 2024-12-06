@@ -6,9 +6,11 @@ pipeline = rs.pipeline()
 # 创建配置并配置请求深度流
 config = rs.config()
 config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)  # 配置color流
 
-# 开始流
-pipeline.start(config)
+
+
+pipeline.start(config)  # streaming流开始
 
 try:
     # 等待一帧深度图
